@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Path Visualization</title>
+    <style>
+        /* 스타일링을 위한 CSS 코드 */
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+    <!-- OpenLayers 라이브러리 추가 -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v6.4.3/css/ol.css" type="text/css">
+    <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v6.4.3/build/ol.js"></script>
+</head>
+<body>
+    <!-- 지도를 그릴 div 엘리먼트 -->
+    <div id="map"></div>
+
+    <script>
+        // 비행기 경로 데이터
+        var flightPathData =  [{"alt": 22775,
+            "hd": 304,
+            "lat": 36.837067,
+            "lng": 127.96434,
+            "spd": 364,
+            "ts": 1697174777},
+           {"alt": 23550,
+            "hd": 304,
+            "lat": 36.806351,
+            "lng": 128.019043,
+            "spd": 369,
+            "ts": 1697174745},
+           {"alt": 24175,
+            "hd": 305,
+            "lat": 36.77636,
+            "lng": 128.072189,
+            "spd": 373,
+            "ts": 1697174715},
+           {"alt": 24800,
+            "hd": 305,
+            "lat": 36.745171,
+            "lng": 128.127228,
+            "spd": 376,
+            "ts": 1697174684},
+           {"alt": 25475,
+            "hd": 305,
+            "lat": 36.713104,
+            "lng": 128.183319,
+            "spd": 378,
+            "ts": 1697174652},
+           {"alt": 26250,
+            "hd": 305,
+            "lat": 36.681198,
+            "lng": 128.239166,
+            "spd": 376,
+            "ts": 1697174621},
+           {"alt": 27025,
+            "hd": 305,
+            "lat": 36.6492,
+            "lng": 128.295425,
+            "spd": 374,
+            "ts": 1697174589},
+           {"alt": 27775,
+            "hd": 304,
+            "lat": 36.615829,
+            "lng": 128.354416,
+            "spd": 377,
+            "ts": 1697174555},
+           {"alt": 28450,
+            "hd": 304,
+            "lat": 36.585251,
+            "lng": 128.409119,
+            "spd": 380,
+            "ts": 1697174525},
+           {"alt": 29175,
+            "hd": 304,
+            "lat": 36.55114,
+            "lng": 128.469452,
+            "spd": 386,
+            "ts": 1697174491},
+           {"alt": 29850,
+            "hd": 304,
+            "lat": 36.519718,
+            "lng": 128.525314,
+            "spd": 390,
+            "ts": 1697174460},
+           {"alt": 30700,
+            "hd": 304,
+            "lat": 36.485039,
+            "lng": 128.586792,
+            "spd": 391,
+            "ts": 1697174427},
+           {"alt": 31475,
+            "hd": 304,
+            "lat": 36.450123,
+            "lng": 128.648621,
+            "spd": 395,
+            "ts": 1697174394},
+           {"alt": 31925,
+            "hd": 305,
+            "lat": 36.417526,
+            "lng": 128.706268,
+            "spd": 399,
+            "ts": 1697174363},
+           {"alt": 31975,
+            "hd": 305,
+            "lat": 36.382462,
+            "lng": 128.768127,
+            "spd": 400,
+            "ts": 1697174330},
+           {"alt": 31975,
+            "hd": 305,
+            "lat": 36.347103,
+            "lng": 128.830246,
+            "spd": 402,
+            "ts": 1697174297}
+	] 
+
+        // OpenLayers 지도 생성
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM() // OpenStreetMap을 사용한 배경 지도
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([128.295425, 36.6492]), // 초기 지도 중심 좌표
+                zoom: 8 // 초기 지도 줌 레벨
+            })
+        });
+
+        // 비행기 경로를 그리기 위한 선 스타일
+        var lineStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'blue', // 선 색상
+                width: 2 // 선 두께
+            })
+        });
+
+        // 비행기 경로를 그릴 LineString 객체 생성
+        var flightPath = new ol.geom.LineString(flightPathData.map(function(coord) {
+            return ol.proj.fromLonLat([coord.lng, coord.lat]);
+        }));
+
+        // 비행기 경로를 나타내는 feature 생성
+        var flightPathFeature = new ol.Feature({
+            geometry: flightPath
+        });
+
+        // 선 스타일을 적용하여 레이어에 추가
+        flightPathFeature.setStyle(lineStyle);
+        var vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [flightPathFeature]
+            })
+        });
+
+        // 비행기 경로 레이어를 지도에 추가
+        map.addLayer(vectorLayer);
+    </script>
+</body>
+</html>
